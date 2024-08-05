@@ -1,21 +1,13 @@
 const express = require('express');
-const bodyParser = require('body-parser');
-const sequelize = require('./config/database');
-const { User, Expense, Category, PaymentMethod, Budget } = require('./models');
-
+const cookieParser = require('cookie-parser');
+const connectDB = require('./config/db');
+const authRoutes = require('./routes/auth');
 const app = express();
-app.use(bodyParser.json());
 
-// Test DB connection and sync models
-sequelize.sync()
-  .then(() => {
-    console.log('Database & tables created!');
-  })
-  .catch(err => console.log('Error creating database:', err));
+connectDB();
+app.use(express.json());
+app.use(cookieParser());
+app.use('/api/auth', authRoutes);
 
-// Define routes here
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
